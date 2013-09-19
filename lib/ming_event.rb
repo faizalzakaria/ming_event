@@ -28,8 +28,10 @@ module MingEvent
 	end
 
 	# Register all the observers def register(observers, interval)
-	@observers.concat observers Timer.new(interval,
-	&method(:fire_observers)) end
+	def register
+	  @observers.concat observers
+	  Timer.new(interval, &method(:fire_observers))
+	end
 
 	def fire_observers
 	  puts "Done ..."
