@@ -13,10 +13,14 @@ describe MingEvent do
 	fired.should be_true
   end
 
-  it "Event should fire observers " do
-	event = MingEvent::Event.new
-	event.register(['a', 'b'], 1)
-	sleep 2
+  it "Should add user " do
+	user = MingEvent::User.new(1, MingEvent::Gender.male)
+	user.user_id.should be 1
+  end
+
+  it "Should not add user " do
+	user = MingEvent::User.new(1, "tata")
+	#user.should be nil
   end
 
 end
