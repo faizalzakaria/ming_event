@@ -94,7 +94,13 @@ module MingEvent
 	end
 
 	def register_user(user_id, gender)
-	  @male_users << User.new(user_id, gender)
+	  if gender == Gender.male
+		@male_users << User.new(user_id, gender)
+	  elsif gender == Gender.female
+		@female_users << User.new(user_id, gender)
+	  else
+		false
+	  end
 	end
 
 	# TODO
