@@ -127,11 +127,14 @@ module MingEvent
       @delay_idle = delay_idle
       @male_list = LinkedList::List.new
       @female_list = LinkedList::List.new
+      @prepared = false
     end
 
     # Register all the observers def register(observers, interval)
     # TODO : rename
     def register_users(female_users, male_users)
+      fail if @prepared
+
       if !female_users.nil?
         female_users.each do |user_id|
           register_user user_id, Gender.female
@@ -146,6 +149,8 @@ module MingEvent
     end
 
     def register_user(user_id, gender)
+      fail if @prepared
+
       if gender == Gender.male
         @male_list.add User.new(user_id, gender)
       elsif gender == Gender.female
@@ -156,6 +161,14 @@ module MingEvent
     end
 
     def prepare
+      while @male_list.size < @female_list.size do
+        @male_list.add User.new(-1, Gender.male)
+      end
+
+      while @female_list.size < @male_list.size do
+        @female_list.add User.new(-1, Gender.female)
+      end
+
       male = @male_list.head
       female = @female_list.head
       while !male.nil?
@@ -164,9 +177,12 @@ module MingEvent
         male = male.next
         female = female.next
       end
+      @prepared = true
     end
 
     def start(procs)
+      fail if !@prepared
+
       @thread = Timer.new(@delay_idle, &procs[:connect_cb])
       @thread.wait
 
@@ -182,10 +198,12 @@ module MingEvent
     end
 
     def stop
+      fail if !@prepared
       @thread.kill
     end
 
     def next_partners
+      fail if !@prepared
       male = @male_list.head
       while !male.nil?
         next_partner male

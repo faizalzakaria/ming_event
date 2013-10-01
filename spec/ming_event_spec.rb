@@ -61,7 +61,7 @@ describe MingEvent do
 
   describe "Testing Event" do
     it "should have 5 males and 5 females" do
-      event = MingEvent::Event.newo
+      event = MingEvent::Event.new
       female_users = [1,2,3,4,5]
       male_users = [6,7,8,9,10]
       event.register_users(female_users, male_users)
@@ -132,6 +132,26 @@ describe MingEvent do
       t.join
       connect_call.should eq(5)
       idle_call.should eq(5)
+    end
+
+    it "Should get 2 connect and 2 idle .." do
+      event = MingEvent::Event.new(1, 1)
+      female_users = [1]
+      male_users = [6,7]
+      event.register_users(female_users, male_users)
+      event.prepare
+      connect_call = 0
+      idle_call = 0
+      t = Thread.new do
+        callbacks = {
+          :connect_cb => Proc.new{ connect_call += 1 },
+          :idle_cb => Proc.new{ idle_call += 1 }
+        }
+        event.start(callbacks)
+      end
+      t.join
+      connect_call.should eq(2)
+      idle_call.should eq(2)
     end
 
   end
