@@ -61,7 +61,7 @@ describe MingEvent do
 
   describe "Testing Event" do
     it "should have 5 males and 5 females" do
-      event = MingEvent::Event.new
+      event = MingEvent::Event.newo
       female_users = [1,2,3,4,5]
       male_users = [6,7,8,9,10]
       event.register_users(female_users, male_users)

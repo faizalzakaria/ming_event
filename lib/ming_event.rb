@@ -167,18 +167,22 @@ module MingEvent
     end
 
     def start(procs)
-      t = Timer.new(@delay_idle, &procs[:connect_cb])
-      t.wait
+      @thread = Timer.new(@delay_idle, &procs[:connect_cb])
+      @thread.wait
 
       (2..@male_list.size).each do
-        t = Timer.new(@delay_chat, &procs[:idle_cb])
-        t.wait
-        t = Timer.new(@delay_idle, &procs[:connect_cb])
-        t.wait
+        @thread = Timer.new(@delay_chat, &procs[:idle_cb])
+        @thread.wait
+        @thread = Timer.new(@delay_idle, &procs[:connect_cb])
+        @thread.wait
       end
 
-      t = Timer.new(@delay_idle, &procs[:idle_cb])
-      t.wait
+      @thread = Timer.new(@delay_idle, &procs[:idle_cb])
+      @thread.wait
+    end
+
+    def stop
+      @thread.kill
     end
 
     def next_partners
