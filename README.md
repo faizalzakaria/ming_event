@@ -1,6 +1,5 @@
 # MingEvent
 
-TODO: Write a gem description
 
 ## Installation
 
@@ -17,8 +16,6 @@ Or install it yourself as:
     $ gem install ming_event
 
 ## Usage
-
-TODO: Write usage instructions here
 
 ## Contributing
 
