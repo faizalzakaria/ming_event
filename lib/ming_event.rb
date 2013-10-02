@@ -37,11 +37,11 @@ module MingEvent
   class Gender
     class << self
       def male
-        "MALE"
+        "M"
       end
 
       def female
-        "FEMALE"
+        "F"
       end
     end
   end # End class Gender
