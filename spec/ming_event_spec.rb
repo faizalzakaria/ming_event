@@ -154,5 +154,22 @@ describe MingEvent do
       idle_call.should eq(2)
     end
 
+    it "Should get 0 connect and 0 idle .." do
+      event = MingEvent::Event.new(1, 1)
+      event.prepare
+      connect_call = 0
+      idle_call = 0
+      t = Thread.new do
+        callbacks = {
+          :connect_cb => Proc.new{ connect_call += 1 },
+          :idle_cb => Proc.new{ idle_call += 1 }
+        }
+        event.start(callbacks)
+      end
+      t.join
+      connect_call.should eq(0)
+      idle_call.should eq(0)
+    end
+
   end
 end

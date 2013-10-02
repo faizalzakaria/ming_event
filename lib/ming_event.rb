@@ -82,6 +82,10 @@ module MingEvent
         @size = 0
       end
 
+      def empty?
+        return @size == 0
+      end
+
       def add(obj)
         new_node = Node.new(obj)
         if @head.nil?
@@ -133,7 +137,7 @@ module MingEvent
     # Register all the observers def register(observers, interval)
     # TODO : rename
     def register_users(female_users, male_users)
-      fail if @prepared
+      return if @prepared
 
       if !female_users.nil?
         female_users.each do |user_id|
@@ -149,7 +153,7 @@ module MingEvent
     end
 
     def register_user(user_id, gender)
-      fail if @prepared
+      return if @prepared
 
       if gender == Gender.male
         @male_list.add User.new(user_id, gender)
@@ -181,29 +185,23 @@ module MingEvent
     end
 
     def start(procs)
-      fail if !@prepared
+      return if !@prepared || @male_list.empty? || @female_list.empty?
 
-      @thread = Timer.new(@delay_idle, &procs[:connect_cb])
-      @thread.wait
-
-      (2..@male_list.size).each do
-        @thread = Timer.new(@delay_chat, &procs[:idle_cb])
-        @thread.wait
+      (1..@male_list.size).each do
         @thread = Timer.new(@delay_idle, &procs[:connect_cb])
         @thread.wait
+        @thread = Timer.new(@delay_chat, &procs[:idle_cb])
+        @thread.wait
       end
-
-      @thread = Timer.new(@delay_idle, &procs[:idle_cb])
-      @thread.wait
     end
 
     def stop
-      fail if !@prepared
+      return if !@prepared
       @thread.kill
     end
 
     def next_partners
-      fail if !@prepared
+      return if !@prepared
       male = @male_list.head
       while !male.nil?
         next_partner male
