@@ -1,4 +1,7 @@
 require "ming_event/version"
+require "ming_event/timer"
+require "ming_event/user"
+require "ming_event/linked_list"
 
 # Register all users, group1 group2
 
@@ -15,112 +18,6 @@ require "ming_event/version"
 # 2 groups, bidirectional
 
 module MingEvent
-
-  # Timer class
-  class Timer
-    def initialize(second, &block)
-      @thread = Thread.new do
-        sleep(second)
-        block.call
-      end
-    end
-
-    def wait
-      @thread.join
-    end
-
-    def cancel
-      @thread.kill
-    end
-  end
-
-  class Gender
-    class << self
-      def male
-        "M"
-      end
-
-      def female
-        "F"
-      end
-    end
-  end # End class Gender
-
-  class User
-    # Connections, conencted to ith when its true
-    attr_reader :gender, :user_id
-    attr_accessor :next_partner
-
-    def initialize(user_id, gender)
-      @user_id = user_id
-      @connections = Hash.new
-      # Todo check gender class
-      @gender = gender
-      @next_partner = nil
-    end
-
-    def is_same_gender?(to_user)
-      return @gender == to_user.gender
-    end
-  end # End class User
-
-  module LinkedList
-    class Node
-      attr_accessor :next, :obj
-
-      def initialize(obj)
-        @next = nil
-        @obj = obj
-      end
-    end
-
-    class List
-      attr_reader :head, :size
-
-      def initialize
-        @head = nil
-        @size = 0
-      end
-
-      def empty?
-        return @size == 0
-      end
-
-      def add(obj)
-        new_node = Node.new(obj)
-        if @head.nil?
-          @head = new_node
-        else
-          temp_node = @head
-          while !temp_node.next.nil?
-            temp_node = temp_node.next
-          end
-          temp_node.next = new_node
-        end
-        @size += 1
-      end
-
-      def remove(node)
-        if node.eql? @head
-          @head = node.next
-        else
-          temp_node = @head
-          prev = nil
-          while !temp_node.nil?
-            if temp_node.eql?(node)
-              prev.next = node.next
-              break
-            end
-            prev = temp_node
-            temp_node = temp_node.next
-          end
-        end
-        node.next = nil
-        @size -= 1
-        GC.start
-      end
-    end
-  end
 
   class Event
     attr_reader :male_list, :female_list
